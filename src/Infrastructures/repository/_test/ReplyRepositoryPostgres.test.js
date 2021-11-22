@@ -6,6 +6,7 @@ const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelp
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AddReply = require('../../../Domains/replies/entities/AddReply');
 const AddedReply = require('../../../Domains/replies/entities/AddedReply');
+const GetReply = require('../../../Domains/replies/entities/GetReply');
 
 describe('ReplyRepository', ()=>{
   beforeEach(async ()=>{
@@ -69,6 +70,25 @@ describe('ReplyRepository', ()=>{
       expect(owner).toStrictEqual(payload.owner);
       expect(content).toStrictEqual(payload.content);
       expect(comment_id).toStrictEqual(payload.commentId);
+    })
+  })
+  describe('getReplyByThreadId function', ()=>{
+    it('should create array of object newReply corecty', async()=>{
+      const payload = {
+        id : 'reply-145',
+        threadId: 'thread-123',
+        commentId:'comment-123',
+        owner : 'user-123',
+        content : 'this is reply test reply repository postgress',
+        date : '12-juni-2021'
+      };
+      await RepliesTableTestHelper.addReply(payload);
+
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+      const replies = await replyRepositoryPostgres.getReplyByThreadId(payload.threadId);
+      expect(replies).toHaveLength(1);
+      expect(replies[0].content).toEqual(payload.content);
+      expect(replies[0].id).toEqual(payload.id);
     })
   })
 })
