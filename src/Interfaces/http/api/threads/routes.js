@@ -28,6 +28,14 @@ const routes = (handler) => ([
     path: '/threads/{threadId}',
     handler: handler.getThreadHandler,
   },
+  {
+    method: 'POST',
+    path: '/threads/{threadId}/comments/{commentId}/replies',
+    handler: handler.postReplyHandler,
+    options: {
+      auth: 'forumapi_jwt',
+    },
+  },
 ]);
 
 module.exports = routes;
