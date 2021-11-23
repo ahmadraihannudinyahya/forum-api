@@ -36,6 +36,7 @@ const GetThreadByIdUseCase = require('../Applications/use_case/GetThreadByIdUseC
 const AddCommentUseCase = require('../Applications/use_case/AddCommentUseCase');
 const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseCase');
 const AddReplyUseCase = require('../Applications/use_case/AddReplyUseCase');
+const DeleteReplyByIdUseCase = require('../Applications/use_case/DeleteReplyByIdUseCase');
 
 // creating container
 const container = createContainer();
@@ -118,16 +119,16 @@ container.register([
     },
   },
   {
-    key : ReplyRepository.name,
-    Class : ReplyRepositoryPostgres,
-    parameter : {
-      dependencies : [
+    key: ReplyRepository.name,
+    Class: ReplyRepositoryPostgres,
+    parameter: {
+      dependencies: [
         {
-          concrete : pool,
+          concrete: pool,
         },
         {
-          concrete :nanoid,
-        }
+          concrete: nanoid,
+        },
       ],
     },
   },
@@ -290,6 +291,31 @@ container.register([
   {
     key: AddReplyUseCase.name,
     Class: AddReplyUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'threadsRepository',
+          internal: ThreadsRepository.name,
+        },
+        {
+          name: 'commentsRepository',
+          internal: CommentsRepository.name,
+        },
+        {
+          name: 'userRepository',
+          internal: UserRepository.name,
+        },
+        {
+          name: 'replyRepository',
+          internal: ReplyRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: DeleteReplyByIdUseCase.name,
+    Class: DeleteReplyByIdUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [

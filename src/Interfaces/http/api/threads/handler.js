@@ -3,6 +3,7 @@ const AddCommentUseCase = require('../../../../Applications/use_case/AddCommentU
 const DeleteCommentUseCase = require('../../../../Applications/use_case/DeleteCommentUseCase');
 const GetThreadByIdUseCase = require('../../../../Applications/use_case/GetThreadByIdUseCase');
 const AddReplyUseCase = require('../../../../Applications/use_case/AddReplyUseCase');
+const DeleteReplyByIdUseCase = require('../../../../Applications/use_case/DeleteReplyByIdUseCase');
 
 class ThreadsHandler {
   constructor(container) {
@@ -13,6 +14,7 @@ class ThreadsHandler {
     this.deleteCommentHandler = this.deleteCommentHandler.bind(this);
     this.getThreadHandler = this.getThreadHandler.bind(this);
     this.postReplyHandler = this.postReplyHandler.bind(this);
+    this.deleteReplyByIdHandler = this.deleteReplyByIdHandler.bind(this);
   }
 
   async postThreadHandler(request, h) {
@@ -76,12 +78,14 @@ class ThreadsHandler {
     return response;
   }
 
-  async postReplyHandler(request,h){
+  async postReplyHandler(request, h) {
     const { threadId, commentId } = request.params;
     const { id: owner } = request.auth.credentials;
     const { content } = request.payload;
-    const addReplyUseCase = this._container.getInstance(AddReplyUseCase.name);  
-    const addedReply = await addReplyUseCase.execute({threadId, commentId, owner, content});
+    const addReplyUseCase = this._container.getInstance(AddReplyUseCase.name);
+    const addedReply = await addReplyUseCase.execute({
+      threadId, commentId, owner, content,
+    });
 
     const response = h.response({
       status: 'success',
@@ -90,6 +94,20 @@ class ThreadsHandler {
       },
     });
     response.code(201);
+    return response;
+  }
+
+  async deleteReplyByIdHandler(request, h) {
+    const { id: owner } = request.auth.credentials;
+    const { threadId, commentId, replyId } = request.params;
+    const deleteReplyByIdUseCase = this._container.getInstance(DeleteReplyByIdUseCase.name);
+    await deleteReplyByIdUseCase.execute({
+      owner, threadId, commentId, replyId,
+    });
+    const response = h.response({
+      status: 'success',
+    });
+    response.code(200);
     return response;
   }
 }

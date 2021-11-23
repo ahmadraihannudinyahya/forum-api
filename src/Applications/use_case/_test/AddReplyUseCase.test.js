@@ -6,22 +6,19 @@ const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 const AddReply = require('../../../Domains/replies/entities/AddReply');
 const AddedReply = require('../../../Domains/replies/entities/AddedReply');
 
-
-
-describe('AddReplyUseCase', ()=>{
-  it('should orchestrating AddReplyUseCase corectly', async ()=>{
+describe('AddReplyUseCase', () => {
+  it('should orchestrating AddReplyUseCase corectly', async () => {
     const useCasePayload = {
-      commentId :'comment-123',
-      threadId :'thread-123',
-      owner : 'owner-123',
-      content:'this is reply test useCase'
+      commentId: 'comment-123',
+      threadId: 'thread-123',
+      owner: 'owner-123',
+      content: 'this is reply test useCase',
     };
 
     const expectedAddedReply = new AddedReply({
-      id : 'reply-123',
-      owner : useCasePayload.owner,
-      content : useCasePayload.content,
-      owner : useCasePayload.owner
+      id: 'reply-123',
+      owner: useCasePayload.owner,
+      content: useCasePayload.content,
     });
 
     const addReply = new AddReply(useCasePayload);
@@ -32,21 +29,22 @@ describe('AddReplyUseCase', ()=>{
     const mockReplyRepository = new ReplyRepository();
 
     mockUserRepository.userOwnerVerification = jest.fn()
-      .mockImplementation(()=>Promise.resolve());
+      .mockImplementation(() => Promise.resolve());
     mockThreadsRepository.verifyAvailableThread = jest.fn()
-      .mockImplementation(()=> Promise.resolve());
+      .mockImplementation(() => Promise.resolve());
     mockCommentsRepository.verifyAvailableComment = jest.fn()
-      .mockImplementation(()=> Promise.resolve());
+      .mockImplementation(() => Promise.resolve());
     mockCommentsRepository.verifyCommentByThreadId = jest.fn()
-      .mockImplementation(()=>Promise.resolve());
+      .mockImplementation(() => Promise.resolve());
     mockReplyRepository.addReply = jest.fn()
-      .mockImplementation(()=>Promise.resolve(expectedAddedReply));
+      .mockImplementation(() => Promise.resolve(expectedAddedReply));
 
     const addReplyUseCase = new AddReplyUseCase({
-      userRepository : mockUserRepository, 
-      threadsRepository : mockThreadsRepository, 
-      commentsRepository : mockCommentsRepository, 
-      replyRepository : mockReplyRepository});
+      userRepository: mockUserRepository,
+      threadsRepository: mockThreadsRepository,
+      commentsRepository: mockCommentsRepository,
+      replyRepository: mockReplyRepository,
+    });
 
     const addedReply = await addReplyUseCase.execute(useCasePayload);
 
@@ -56,5 +54,5 @@ describe('AddReplyUseCase', ()=>{
     expect(mockCommentsRepository.verifyAvailableComment).toBeCalledWith(addReply.commentId);
     expect(mockCommentsRepository.verifyCommentByThreadId).toBeCalledWith(addReply);
     expect(mockReplyRepository.addReply).toBeCalledWith(addReply);
-  })
-})
+  });
+});

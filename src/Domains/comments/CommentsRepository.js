@@ -18,7 +18,8 @@ class CommentsRepository {
   async verifyAvailableComment(deleteComment) {
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
-  async verifyCommentByThreadId(payload){
+
+  async verifyCommentByThreadId(payload) {
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 }

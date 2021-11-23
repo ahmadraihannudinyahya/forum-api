@@ -21,8 +21,8 @@ DomainErrorTranslator._directories = {
   'ADD_THREAD.NOT_MEET_DATA_SPECIFICATION': new InvariantError('tidak dapat membuat thread baru karena properti yang dibutuhkan tidak memenuhi syarat'),
   'NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('comment tidak dapat ditambahkan karena payload tidak lengkap'),
   'NEW_COMMENT.NOT_MEET_DATA_SPECIFICATION': new InvariantError('comment tidak dapat ditambahkan karena payload tidak sesuai spesifikasi'),
-  'ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY' : new InvariantError('tidak bisa menambahkan balasan karena request tidak lengkap'),
-  'ADD_REPLY.NOT_MEET_DATA_SPESIFICATION' : new InvariantError('tidak bisa menambahkan balasan karena request tidak sesuai spesifikasi')
+  'ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('tidak bisa menambahkan balasan karena request tidak lengkap'),
+  'ADD_REPLY.NOT_MEET_DATA_SPESIFICATION': new InvariantError('tidak bisa menambahkan balasan karena request tidak sesuai spesifikasi'),
 };
 
 module.exports = DomainErrorTranslator;

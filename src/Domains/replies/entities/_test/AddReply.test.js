@@ -1,29 +1,29 @@
 const AddReply = require('../AddReply');
 
-describe('AddReply Entities', ()=>{
-  it('should throw error when not contain needed property', ()=>{
+describe('AddReply Entities', () => {
+  it('should throw error when not contain needed property', () => {
     const payload = {
       commentId: 'comment-123',
-      owner : 'user-123'
-    }
-    expect(()=>new AddReply(payload)).toThrowError('ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
+      owner: 'user-123',
+    };
+    expect(() => new AddReply(payload)).toThrowError('ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
   });
-  it('should throw error when not meet data spesification', ()=>{
+  it('should throw error when not meet data spesification', () => {
     const payload = {
-      commentId : 'user-123',
-      threadId :'thread-123',
-      owner : 1233435,
-      content : 'this is reply'
-    }
-    expect(()=> new AddReply(payload)).toThrowError('ADD_REPLY.NOT_MEET_DATA_SPESIFICATION');
+      commentId: 'user-123',
+      threadId: 'thread-123',
+      owner: 1233435,
+      content: 'this is reply',
+    };
+    expect(() => new AddReply(payload)).toThrowError('ADD_REPLY.NOT_MEET_DATA_SPESIFICATION');
   });
-  it('should create addReply object corectly', ()=>{
+  it('should create addReply object corectly', () => {
     const payload = {
-      commentId : 'user-123',
-      threadId :'thread-123',
-      owner : 'user-123',
-      content : 'this is reply'
-    }
+      commentId: 'user-123',
+      threadId: 'thread-123',
+      owner: 'user-123',
+      content: 'this is reply',
+    };
     const addReply = new AddReply(payload);
 
     expect(addReply.commentId).toStrictEqual(payload.commentId);

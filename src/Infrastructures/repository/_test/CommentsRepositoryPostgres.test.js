@@ -218,15 +218,15 @@ describe('CommentsRepositoryPostgres', () => {
         .resolves.not.toThrowError();
     });
   });
-  describe('verifyCommentByThreadId function', ()=>{
-    it('should throw error when Comment not found in threadId', async ()=>{
+  describe('verifyCommentByThreadId function', () => {
+    it('should throw error when Comment not found in threadId', async () => {
       const commentsRepositoryPostgres = new CommentsRepositoryPostgres(pool, {});
       await expect(commentsRepositoryPostgres.verifyCommentByThreadId({
-        threadId : 'thread-123',
-        commentId : 'comment-123'
+        threadId: 'thread-123',
+        commentId: 'comment-123',
       })).rejects.toThrowError(NotFoundError);
     });
-    it('should not throw error when when comment found in threadId', async()=>{
+    it('should not throw error when when comment found in threadId', async () => {
       await UsersTableTestHelper.addUser({
         id: 'user-123',
       });
@@ -241,9 +241,9 @@ describe('CommentsRepositoryPostgres', () => {
       });
       const commentsRepositoryPostgres = new CommentsRepositoryPostgres(pool, {});
       await expect(commentsRepositoryPostgres.verifyCommentByThreadId({
-        threadId : 'thread-123',
-        commentId : 'comment-123'
+        threadId: 'thread-123',
+        commentId: 'comment-123',
       })).resolves.not.toThrowError();
-    })
-  })
+    });
+  });
 });
