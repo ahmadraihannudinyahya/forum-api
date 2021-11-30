@@ -198,4 +198,77 @@ describe('likecomment endpoint', () => {
       expect(responseJson.message).toBeDefined();
     });
   });
+  describe('when get thread', ()=>{
+    const newUsers = {
+      username: 'dicoding',
+      password: 'superSecret',
+      fullname: 'dicoding indonesia',
+    };
+    const newComment = {
+      content: 'this is comments',
+    };
+    beforeAll(async () => {
+      const server = await createServer(container);
+      // add user
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: newUsers,
+      });
+      // get authentencations
+      const response = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: newUsers,
+      });
+      const { data } = JSON.parse(response.payload);
+      newUsers.accessToken = data.accessToken;
+      // get commentId
+      const responseComment = await server.inject({
+        method: 'POST',
+        url: `/threads/${thread.id}/comments`,
+        headers: {
+          Authorization: `Bearer ${users.accessToken}`,
+        },
+        payload: newComment,
+      });
+      const responseJsonComment = JSON.parse(responseComment.payload);
+      newComment.id = responseJsonComment.data.addedComment.id;
+    });
+    it('should add likeCount corectly', async ()=>{
+      const server = await createServer(container);
+      await server.inject({
+        method: 'PUT',
+        url: `/threads/${thread.id}/comments/${comment.id}/likes`,
+        headers: {
+          Authorization: `Bearer ${users.accessToken}`,
+        },
+      });
+      await server.inject({
+        method: 'PUT',
+        url: `/threads/${thread.id}/comments/${newComment.id}/likes`,
+        headers: {
+          Authorization: `Bearer ${users.accessToken}`,
+        },
+      });
+      await server.inject({
+        method: 'PUT',
+        url: `/threads/${thread.id}/comments/${newComment.id}/likes`,
+        headers: {
+          Authorization: `Bearer ${newUsers.accessToken}`,
+        },
+      });
+
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${thread.id}`,
+      });
+      const responseJson = JSON.parse(response.payload);
+      console.log(responseJson.data.thread.comments);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.thread.comments[0].likeCount).toEqual(1);
+      expect(responseJson.data.thread.comments[1].likeCount).toEqual(2);
+    })
+  })
 });

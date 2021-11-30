@@ -1,8 +1,9 @@
 class GetThreadByIdUseCase {
-  constructor({ threadsRepository, commentsRepository, replyRepository }) {
+  constructor({ threadsRepository, commentsRepository, replyRepository, likesRepository }) {
     this._threadsRepository = threadsRepository;
     this._commentsRepository = commentsRepository;
     this._replyRepository = replyRepository;
+    this._likesRepository = likesRepository;
   }
 
   async execute(threadId) {
@@ -12,6 +13,7 @@ class GetThreadByIdUseCase {
     if (comments.length > 0) {
       thread.comments = [];
       const replies = await this._replyRepository.getReplyByThreadId(threadId);
+      const likes = await this._likesRepository.getLikeByThreadId(threadId)
       comments.forEach((comment) => {
         if (replies.length > 0) {
           comment.replies = [];
@@ -20,6 +22,7 @@ class GetThreadByIdUseCase {
               comment.replies.push(reply);
             }
           });
+          comment.likeCount = likes.filter(like => like.comment_id = comment.id)
         }
         thread.comments.push(comment);
       });

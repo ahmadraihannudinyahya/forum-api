@@ -34,6 +34,15 @@ class LikeRepositoryPostgres extends LikesRepository {
       throw new Error('User has liked');
     }
   }
+
+  async getLikeByThreadId(threadId){
+    const query = {
+      text : 'SELECT comment_id FROM likes WHERE thread_id = $1',
+      values : [threadId]
+    };
+    const result = await this._pool.query(query);
+    return result.rows;
+  }
 }
 
 module.exports = LikeRepositoryPostgres;

@@ -2,15 +2,17 @@ const GetThreadByIdUseCase = require('../GetThreadByIdUseCase');
 const ThreadsRepository = require('../../../Domains/threads/ThreadsRepository');
 const CommentsRepository = require('../../../Domains/comments/CommentsRepository');
 const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
+const LikesRepository = require('../../../Domains/likes/LikesRepository');
 const GetComment = require('../../../Domains/comments/entities/GetComment');
 const GetThread = require('../../../Domains/threads/entities/GetThread');
 const GetReply = require('../../../Domains/replies/entities/GetReply');
 
 describe('GetThreadByIdUseCase', () => {
-  it('should orchestrating add comment use case corectly', async () => {
+  it('should orchestrating get thread use case corectly with comment', async () => {
     const mockThreadsRepository = new ThreadsRepository();
     const mockCommentsRepository = new CommentsRepository();
     const mockReplyRepository = new ReplyRepository();
+    const mockLikesRepository = new LikesRepository();
 
     const expectedGetThread = new GetThread({
       id: 'thread-h_2FkLZhtgBKY2kh4CC02',
@@ -73,6 +75,16 @@ describe('GetThreadByIdUseCase', () => {
     ];
     const expectedGetComment = commentPayload.map((comment) => new GetComment(comment));
     const expectedGetReply = replyPayload.map((reply) => new GetReply(reply));
+    const expectedGetLike = [
+      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
+      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
+      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
+      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
+      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
+      {comment_id: 'comment-yksuCoxM2s4MMrZJO-qVD'},
+      {comment_id: 'comment-yksuCoxM2s4MMrZJO-qVD'},
+      {comment_id: 'comment-yksuCoxM2s4MMrZJO-qVD'},
+    ];
     const expectedThread = expectedGetThread;
     expectedThread.comments = [];
     expectedGetComment.forEach((comment) => {
@@ -82,6 +94,7 @@ describe('GetThreadByIdUseCase', () => {
           comment.replies.push(reply);
         }
       });
+      comment.likeCount = expectedGetLike.filter(like => like.comment_id === comment.id).length
       expectedThread.comments.push(comment);
     });
 
@@ -93,11 +106,14 @@ describe('GetThreadByIdUseCase', () => {
       .mockImplementation(() => Promise.resolve(expectedGetComment));
     mockReplyRepository.getReplyByThreadId = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedGetReply));
+    mockLikesRepository.getLikeByThreadId = jest.fn()
+      .mockImplementation(()=> Promise.resolve(expectedGetLike));
 
     const getThreadByIdUseCase = new GetThreadByIdUseCase({
       threadsRepository: mockThreadsRepository,
       commentsRepository: mockCommentsRepository,
       replyRepository: mockReplyRepository,
+      likesRepository : mockLikesRepository,
     });
 
     const thread = await getThreadByIdUseCase.execute(expectedGetThread.id);
@@ -106,11 +122,15 @@ describe('GetThreadByIdUseCase', () => {
     expect(mockThreadsRepository.getThreadById).toBeCalledWith(expectedGetThread.id);
     expect(mockCommentsRepository.getCommentsByThreadId).toBeCalledWith(expectedGetThread.id);
     expect(mockReplyRepository.getReplyByThreadId).toBeCalledWith(expectedGetThread.id);
+    expect(mockLikesRepository.getLikeByThreadId).toBeCalledWith(expectedGetThread.id);
   });
-  it('should orchestrating add comment use case corectly with thread not commented', async () => {
+
+  it('should orchestrating get thread use case corectly with thread not commented', async () => {
     const mockThreadsRepository = new ThreadsRepository();
     const mockCommentsRepository = new CommentsRepository();
     const mockReplyRepository = new ReplyRepository();
+    const mockLikesRepository = new LikesRepository();
+
 
     const expectedGetThread = new GetThread({
       id: 'thread-h_2FkLZhtgBKY2kh4CC02',
@@ -170,11 +190,14 @@ describe('GetThreadByIdUseCase', () => {
       .mockImplementation(() => Promise.resolve(expectedGetComment));
     mockReplyRepository.getReplyByThreadId = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedGetReply));
+    mockLikesRepository.getLikeByThreadId = jest.fn()
+      .mockImplementation(()=> Promise.resolve([]));
 
     const getThreadByIdUseCase = new GetThreadByIdUseCase({
       threadsRepository: mockThreadsRepository,
       commentsRepository: mockCommentsRepository,
       replyRepository: mockReplyRepository,
+      likesRepository : mockLikesRepository,
     });
 
     const thread = await getThreadByIdUseCase.execute(expectedGetThread.id);
@@ -183,5 +206,6 @@ describe('GetThreadByIdUseCase', () => {
     expect(mockThreadsRepository.getThreadById).toBeCalledWith(expectedGetThread.id);
     expect(mockCommentsRepository.getCommentsByThreadId).toBeCalledWith(expectedGetThread.id);
     expect(mockReplyRepository.getReplyByThreadId).not.toBeCalledWith(expectedGetThread.id);
+    expect(mockLikesRepository.getLikeByThreadId).not.toBeCalledWith(expectedGetThread.id);
   });
 });
