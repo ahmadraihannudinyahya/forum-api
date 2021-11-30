@@ -77,8 +77,8 @@ describe('LikeRepositoryPostgres', () => {
         .resolves.not.toThrowError('User has liked');
     });
   });
-  describe('getLikeByThreadId function', ()=>{
-    it('should return array of object like CommnetId by thread corectly', async ()=>{
+  describe('getLikeByThreadId function', () => {
+    it('should return array of object like CommnetId by thread corectly', async () => {
       // like in coment-123
       const payloadLike = new NewLike({
         userId: 'user-123',
@@ -86,7 +86,7 @@ describe('LikeRepositoryPostgres', () => {
         commentId: 'comment-123',
       });
       await LikeTableTestHelper.addLike({ id: 'like-123', ...payloadLike });
-      //create comment-112
+      // create comment-112
       await CommentsTableTestHelper.addComment({ id: 'comment-122', threadId: 'thread-123', owner: 'user-123' });
       // like in comment-112
       const payloadNewLike = new NewLike({
@@ -104,6 +104,6 @@ describe('LikeRepositoryPostgres', () => {
       expect(likes[0].comment_id).toBeDefined();
       expect(likes[0].comment_id).toEqual('comment-123');
       expect(likes[1].comment_id).toEqual('comment-122');
-    })
-  })
+    });
+  });
 });

@@ -198,9 +198,9 @@ describe('likecomment endpoint', () => {
       expect(responseJson.message).toBeDefined();
     });
   });
-  describe('when get thread', ()=>{
+  describe('when get thread', () => {
     const newUsers = {
-      username: 'dicoding',
+      username: 'newuser',
       password: 'superSecret',
       fullname: 'dicoding indonesia',
     };
@@ -235,13 +235,27 @@ describe('likecomment endpoint', () => {
       const responseJsonComment = JSON.parse(responseComment.payload);
       newComment.id = responseJsonComment.data.addedComment.id;
     });
-    it('should add likeCount corectly', async ()=>{
+    it('should add likeCount corectly', async () => {
       const server = await createServer(container);
       await server.inject({
         method: 'PUT',
         url: `/threads/${thread.id}/comments/${comment.id}/likes`,
         headers: {
           Authorization: `Bearer ${users.accessToken}`,
+        },
+      });
+      await server.inject({
+        method: 'PUT',
+        url: `/threads/${thread.id}/comments/${comment.id}/likes`,
+        headers: {
+          Authorization: `Bearer ${newUsers.accessToken}`,
+        },
+      });
+      await server.inject({
+        method: 'PUT',
+        url: `/threads/${thread.id}/comments/${comment.id}/likes`,
+        headers: {
+          Authorization: `Bearer ${newUsers.accessToken}`,
         },
       });
       await server.inject({
@@ -264,11 +278,10 @@ describe('likecomment endpoint', () => {
         url: `/threads/${thread.id}`,
       });
       const responseJson = JSON.parse(response.payload);
-      console.log(responseJson.data.thread.comments);
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.thread.comments[0].likeCount).toEqual(1);
       expect(responseJson.data.thread.comments[1].likeCount).toEqual(2);
-    })
-  })
+    });
+  });
 });

@@ -76,14 +76,14 @@ describe('GetThreadByIdUseCase', () => {
     const expectedGetComment = commentPayload.map((comment) => new GetComment(comment));
     const expectedGetReply = replyPayload.map((reply) => new GetReply(reply));
     const expectedGetLike = [
-      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
-      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
-      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
-      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
-      {comment_id: 'comment-_pby2_tmXV6bcvcdev8xk'},
-      {comment_id: 'comment-yksuCoxM2s4MMrZJO-qVD'},
-      {comment_id: 'comment-yksuCoxM2s4MMrZJO-qVD'},
-      {comment_id: 'comment-yksuCoxM2s4MMrZJO-qVD'},
+      { comment_id: 'comment-_pby2_tmXV6bcvcdev8xk' },
+      { comment_id: 'comment-_pby2_tmXV6bcvcdev8xk' },
+      { comment_id: 'comment-_pby2_tmXV6bcvcdev8xk' },
+      { comment_id: 'comment-_pby2_tmXV6bcvcdev8xk' },
+      { comment_id: 'comment-_pby2_tmXV6bcvcdev8xk' },
+      { comment_id: 'comment-yksuCoxM2s4MMrZJO-qVD' },
+      { comment_id: 'comment-yksuCoxM2s4MMrZJO-qVD' },
+      { comment_id: 'comment-yksuCoxM2s4MMrZJO-qVD' },
     ];
     const expectedThread = expectedGetThread;
     expectedThread.comments = [];
@@ -94,7 +94,7 @@ describe('GetThreadByIdUseCase', () => {
           comment.replies.push(reply);
         }
       });
-      comment.likeCount = expectedGetLike.filter(like => like.comment_id === comment.id).length
+      comment.likeCount = expectedGetLike.filter((like) => like.comment_id === comment.id).length;
       expectedThread.comments.push(comment);
     });
 
@@ -107,13 +107,13 @@ describe('GetThreadByIdUseCase', () => {
     mockReplyRepository.getReplyByThreadId = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedGetReply));
     mockLikesRepository.getLikeByThreadId = jest.fn()
-      .mockImplementation(()=> Promise.resolve(expectedGetLike));
+      .mockImplementation(() => Promise.resolve(expectedGetLike));
 
     const getThreadByIdUseCase = new GetThreadByIdUseCase({
       threadsRepository: mockThreadsRepository,
       commentsRepository: mockCommentsRepository,
       replyRepository: mockReplyRepository,
-      likesRepository : mockLikesRepository,
+      likesRepository: mockLikesRepository,
     });
 
     const thread = await getThreadByIdUseCase.execute(expectedGetThread.id);
@@ -130,7 +130,6 @@ describe('GetThreadByIdUseCase', () => {
     const mockCommentsRepository = new CommentsRepository();
     const mockReplyRepository = new ReplyRepository();
     const mockLikesRepository = new LikesRepository();
-
 
     const expectedGetThread = new GetThread({
       id: 'thread-h_2FkLZhtgBKY2kh4CC02',
@@ -191,13 +190,13 @@ describe('GetThreadByIdUseCase', () => {
     mockReplyRepository.getReplyByThreadId = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedGetReply));
     mockLikesRepository.getLikeByThreadId = jest.fn()
-      .mockImplementation(()=> Promise.resolve([]));
+      .mockImplementation(() => Promise.resolve([]));
 
     const getThreadByIdUseCase = new GetThreadByIdUseCase({
       threadsRepository: mockThreadsRepository,
       commentsRepository: mockCommentsRepository,
       replyRepository: mockReplyRepository,
-      likesRepository : mockLikesRepository,
+      likesRepository: mockLikesRepository,
     });
 
     const thread = await getThreadByIdUseCase.execute(expectedGetThread.id);
